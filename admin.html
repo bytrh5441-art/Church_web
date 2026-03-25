@@ -144,7 +144,6 @@
   <button class="upload-btn" onclick="upload()">نشر</button>
 </div>
 
-<script type="module" src="app.js"></script>
 <script>
 const fileInput = document.getElementById('file');
 const fileName = document.getElementById('fileName');
@@ -157,8 +156,8 @@ fileInput.addEventListener('change', () => {
   }
 });
 
-// هنا نرسل info إضافية للسيرفر، التاريخ اختياري
-export function upload() {
+// دالة الرفع الحقيقية
+function upload() {
   const title = document.getElementById('title').value;
   const includeDate = document.getElementById('includeDate').checked;
   const file = fileInput.files[0];
@@ -173,9 +172,10 @@ export function upload() {
   if(file) formData.append('file', file);
   if(includeDate) formData.append('date', new Date().toISOString());
 
-  // هنا تستخدم دالة upload الأصلية في app.js أو fetch/ajax حسب مشروعك
-  // مثال وهمي:
-  alert('البيانات جاهزة للإرسال للسيرفر');
+  // هنا تضع الكود الحقيقي للرفع على السيرفر
+  // مثلاً fetch أو استدعاء دالة upload في app.js
+  console.log("البيانات جاهزة للإرسال:", formData);
+  alert('تم تجهيز البيانات للإرسال للسيرفر');
 }
 </script>
 
