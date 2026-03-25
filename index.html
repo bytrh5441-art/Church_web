@@ -41,31 +41,34 @@ h1 {
   transition: all 0.3s ease;
   overflow: hidden;
   position: relative;
-  display: flex;
-  flex-direction: row-reverse; /* خط جانبي للكاردات الداخلية على اليسار */
-  gap: 15px;
 }
 
 .card:hover { transform: translateY(-5px); }
 
-.card-info {
-  flex: 1;
+.card-header {
+  margin-bottom: 15px;
 }
 
 .card-title {
   font-size: 20px;
   font-weight: 600;
   color: #333;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .card-date {
   font-size: 12px;
   color: #888;
-  margin-bottom: 10px;
 }
 
-/* المحتويات الداخلية في خط جانبي */
+/* المحتويات الداخلية مع الخط الجانبي */
+.card-content-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 15px;
+}
+
 .card-content {
   display: flex;
   flex-direction: column;
@@ -73,11 +76,12 @@ h1 {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.5s ease;
-  width: 200px; /* عرض الخط الجانبي */
+  padding-left: 20px;
+  border-left: 4px solid #f83600; /* الخط الجانبي الزاهي */
 }
 
 .card.open .card-content {
-  max-height: 1000px;
+  max-height: 2000px; /* ارتفاع تقريبي للفتح */
 }
 
 /* كاردات صغيرة داخل الكارد الرئيسي */
@@ -151,12 +155,16 @@ async function loadPosts() {
     const card = document.createElement("div");
     card.className = "card";
 
-    card.innerHTML = `<div class="card-info">
-                        <div class="card-title">${post.title || "بدون عنوان"}</div>
-                        ${dateStr ? `<div class="card-date">تاريخ الرفع: ${dateStr}</div>` : ""}
-                      </div>
-                      <div class="card-content"></div>`;
-    
+    // الهيدر (عنوان + تاريخ)
+    const headerHTML = `<div class="card-header">
+                          <div class="card-title">${post.title || "بدون عنوان"}</div>
+                          ${dateStr ? `<div class="card-date">تاريخ الرفع: ${dateStr}</div>` : ""}
+                        </div>`;
+
+    card.innerHTML = headerHTML + `<div class="card-content-wrapper">
+                                     <div class="card-content"></div>
+                                   </div>`;
+
     const cardContent = card.querySelector(".card-content");
 
     // إنشاء الكاردات الداخلية لكل نوع محتوى
@@ -183,7 +191,7 @@ async function loadPosts() {
       }
     }
 
-    // فتح/إغلاق الكارد الرئيسي
+    // فتح/إغلاق الكارد الرئيسي عند الضغط على أي مكان في الكارد
     card.addEventListener("click", () => {
       card.classList.toggle("open");
     });
