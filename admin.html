@@ -3,15 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>رفع بوست عصري جداً</title>
+  <title>رفع محاضرة عصري</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
-    }
+    * { box-sizing: border-box; margin:0; padding:0; font-family: 'Poppins', sans-serif; }
 
     body {
       min-height: 100vh;
@@ -34,9 +29,7 @@
       transition: transform 0.3s ease;
     }
 
-    .card:hover {
-      transform: translateY(-10px);
-    }
+    .card:hover { transform: translateY(-10px); }
 
     h2 {
       font-size: 32px;
@@ -51,7 +44,7 @@
       border-radius: 15px;
       border: 1px solid #ddd;
       font-size: 16px;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       transition: all 0.3s ease;
     }
 
@@ -79,14 +72,16 @@
       transform: translateY(-3px);
     }
 
-    #file {
-      display: none;
-    }
+    #file { display: none; }
 
-    .file-name {
-      font-size: 14px;
-      color: #555;
-      margin-bottom: 30px;
+    .file-name { font-size: 14px; color: #555; margin-bottom: 20px; }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 25px;
     }
 
     .upload-btn {
@@ -106,7 +101,7 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
 
-    /* عناصر زخرفية */
+    /* زخارف */
     .card::before {
       content: '';
       position: absolute;
@@ -133,14 +128,19 @@
 <body>
 
 <div class="card">
-  <h2>رفع بوست</h2>
-  <input type="text" id="text" class="input-field" placeholder="اكتب نصك هنا">
+  <h2>رفع محاضرة</h2>
+
+  <input type="text" id="title" class="input-field" placeholder="عنوان المحاضرة">
 
   <label for="file" class="file-label">اختر ملف</label>
   <input type="file" id="file">
   <div class="file-name" id="fileName">لم يتم اختيار أي ملف</div>
 
-  <!-- هنا نحتفظ بالرفع الحقيقي -->
+  <div class="checkbox-container">
+    <input type="checkbox" id="includeDate">
+    <label for="includeDate">أضف تاريخ الرفع</label>
+  </div>
+
   <button class="upload-btn" onclick="upload()">نشر</button>
 </div>
 
@@ -156,6 +156,27 @@ fileInput.addEventListener('change', () => {
     fileName.textContent = 'لم يتم اختيار أي ملف';
   }
 });
+
+// هنا نرسل info إضافية للسيرفر، التاريخ اختياري
+export function upload() {
+  const title = document.getElementById('title').value;
+  const includeDate = document.getElementById('includeDate').checked;
+  const file = fileInput.files[0];
+
+  if(!title && !file) {
+    alert('اكتب عنوان أو اختر ملف!');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('title', title);
+  if(file) formData.append('file', file);
+  if(includeDate) formData.append('date', new Date().toISOString());
+
+  // هنا تستخدم دالة upload الأصلية في app.js أو fetch/ajax حسب مشروعك
+  // مثال وهمي:
+  alert('البيانات جاهزة للإرسال للسيرفر');
+}
 </script>
 
 </body>
