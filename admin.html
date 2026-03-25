@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>رفع محاضرة عصري على Firebase</title>
+  <title>رفع محاضرة متعددة المحتويات</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin:0; padding:0; font-family: 'Poppins', sans-serif; }
@@ -13,7 +13,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #f83600, #f9d423);
+      background: linear-gradient(135deg,#f83600,#f9d423);
+      padding: 20px;
     }
 
     .card {
@@ -21,7 +22,7 @@
       border-radius: 25px;
       box-shadow: 0 25px 50px rgba(0,0,0,0.2);
       width: 100%;
-      max-width: 500px;
+      max-width: 600px;
       padding: 50px 35px;
       text-align: center;
       position: relative;
@@ -33,24 +34,56 @@
 
     h2 { font-size: 32px; color: #333; margin-bottom: 30px; font-weight: 600; }
 
-    .input-field { width: 100%; padding: 18px 20px; border-radius: 15px; border: 1px solid #ddd; font-size: 16px; margin-bottom: 20px; transition: all 0.3s ease; }
-    .input-field:focus { border-color: #f83600; box-shadow: 0 0 10px rgba(248,54,0,0.3); outline: none; }
+    .input-field, .file-label, .upload-btn {
+      width: 100%;
+    }
 
-    .file-label { display: inline-block; padding: 15px 30px; background: #f83600; color: #fff; border-radius: 15px; cursor: pointer; font-weight: 600; margin-bottom: 10px; transition: all 0.3s; }
-    .file-label:hover { background: #f9d423; color: #333; transform: translateY(-3px); }
+    .input-field {
+      padding: 18px 20px;
+      border-radius: 15px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+    }
 
-    #file { display: none; }
+    .input-field:focus {
+      border-color: #f83600;
+      box-shadow: 0 0 10px rgba(248,54,0,0.3);
+      outline: none;
+    }
 
-    .file-name { font-size: 14px; color: #555; margin-bottom: 20px; }
+    .file-label {
+      display: block;
+      padding: 15px 20px;
+      background: #f83600;
+      color: #fff;
+      border-radius: 15px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 5px;
+      transition: all 0.3s;
+    }
 
-    .checkbox-container { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 25px; }
+    .file-label:hover { background: #f9d423; color:#333; transform: translateY(-3px); }
+    .file-input { display: none; }
+    .file-name { font-size: 14px; color: #555; margin-bottom: 15px; text-align: left; }
 
-    .upload-btn { background: linear-gradient(90deg, #f83600, #f9d423); padding: 18px 40px; border: none; border-radius: 20px; color: #fff; font-size: 18px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+    .checkbox-container { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; }
+
+    .upload-btn {
+      background: linear-gradient(90deg,#f83600,#f9d423);
+      padding: 18px 0;
+      border: none;
+      border-radius: 20px;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
     .upload-btn:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-
-    /* زخارف */
-    .card::before { content: ''; position: absolute; width: 150px; height: 150px; background: rgba(248,54,0,0.1); border-radius: 50%; top: -50px; right: -50px; }
-    .card::after { content: ''; position: absolute; width: 200px; height: 200px; background: rgba(249,212,35,0.1); border-radius: 50%; bottom: -70px; left: -70px; }
   </style>
 </head>
 <body>
@@ -58,12 +91,27 @@
 <div class="card">
   <h2>رفع محاضرة</h2>
 
-  <input type="text" id="text" class="input-field" placeholder="عنوان المحاضرة">
+  <input type="text" id="title" class="input-field" placeholder="عنوان المحاضرة">
 
-  <label for="file" class="file-label">اختر ملف</label>
-  <input type="file" id="file">
-  <div class="file-name" id="fileName">لم يتم اختيار أي ملف</div>
+  <!-- نص -->
+  <textarea id="textContent" class="input-field" placeholder="أدخل نص المحاضرة" rows="3"></textarea>
 
+  <!-- صورة -->
+  <label for="imageFile" class="file-label">اختر صورة</label>
+  <input type="file" id="imageFile" class="file-input" accept="image/*">
+  <div class="file-name" id="imageName">لم يتم اختيار أي صورة</div>
+
+  <!-- فيديو -->
+  <label for="videoFile" class="file-label">اختر فيديو</label>
+  <input type="file" id="videoFile" class="file-input" accept="video/*">
+  <div class="file-name" id="videoName">لم يتم اختيار أي فيديو</div>
+
+  <!-- PDF -->
+  <label for="pdfFile" class="file-label">اختر ملف PDF</label>
+  <input type="file" id="pdfFile" class="file-input" accept=".pdf">
+  <div class="file-name" id="pdfName">لم يتم اختيار أي PDF</div>
+
+  <!-- تاريخ اختياري -->
   <div class="checkbox-container">
     <input type="checkbox" id="includeDate">
     <label for="includeDate">أضف تاريخ الرفع</label>
@@ -85,54 +133,61 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const fileInput = document.getElementById('file');
-const fileName = document.getElementById('fileName');
+// متابعة أسماء الملفات
+function handleFile(inputId, nameId){
+  const input = document.getElementById(inputId);
+  const nameEl = document.getElementById(nameId);
+  input.addEventListener('change', () => {
+    nameEl.textContent = input.files.length > 0 ? input.files[0].name : `لم يتم اختيار أي ${nameId.includes("image") ? "صورة" : nameId.includes("video") ? "فيديو" : "PDF"}`;
+  });
+}
+handleFile("imageFile","imageName");
+handleFile("videoFile","videoName");
+handleFile("pdfFile","pdfName");
 
-fileInput.addEventListener('change', () => {
-  if(fileInput.files.length > 0){
-    fileName.textContent = fileInput.files[0].name;
-  } else {
-    fileName.textContent = 'لم يتم اختيار أي ملف';
-  }
-});
-
-window.upload = async function() {
-  const text = document.getElementById("text").value;
-  const includeDate = document.getElementById("includeDate").checked;
-  const file = fileInput.files[0];
-
-  if (!file) {
-    alert("اختار صورة");
-    return;
-  }
-
-  // رفع الصورة على Cloudinary
+// رفع الملفات على Cloudinary
+async function uploadToCloudinary(file, type){
+  if(!file) return null;
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_preset", "my_preset");
-
-  const res = await fetch("https://api.cloudinary.com/v1_1/dyml1sor9/image/upload", {
-    method: "POST",
-    body: formData
-  });
-
+  const url = type==="video" ? "https://api.cloudinary.com/v1_1/dyml1sor9/video/upload" : "https://api.cloudinary.com/v1_1/dyml1sor9/image/upload";
+  const res = await fetch(url, { method: "POST", body: formData });
   const data = await res.json();
+  return data.secure_url;
+}
 
-  // حفظ في Firebase
-  const docData = {
-    text: text,
-    image: data.secure_url
-  };
+window.upload = async function(){
+  const title = document.getElementById("title").value;
+  const textContent = document.getElementById("textContent").value;
+  const includeDate = document.getElementById("includeDate").checked;
+
+  const imageFile = document.getElementById("imageFile").files[0];
+  const videoFile = document.getElementById("videoFile").files[0];
+  const pdfFile = document.getElementById("pdfFile").files[0];
+
+  if(!title && !textContent && !imageFile && !videoFile && !pdfFile){
+    alert("اختر محتوى أو اكتب عنوان!");
+    return;
+  }
+
+  const docData = { title, contents: {} };
   if(includeDate) docData.date = new Date().toISOString();
 
-  await addDoc(collection(db, "posts"), docData);
+  if(textContent) docData.contents.text = textContent;
+  if(imageFile) docData.contents.image = await uploadToCloudinary(imageFile,"image");
+  if(videoFile) docData.contents.video = await uploadToCloudinary(videoFile,"video");
+  if(pdfFile) docData.contents.pdf = await uploadToCloudinary(pdfFile,"file");
+
+  await addDoc(collection(db,"posts"), docData);
 
   alert("تم النشر 🔥");
 
-  // إعادة تعيين الحقول بعد الرفع
-  document.getElementById("text").value = "";
-  fileInput.value = "";
-  fileName.textContent = "لم يتم اختيار أي ملف";
+  // إعادة تعيين الحقول
+  document.getElementById("title").value = "";
+  document.getElementById("textContent").value = "";
+  ["imageFile","videoFile","pdfFile"].forEach(id=>document.getElementById(id).value="");
+  ["imageName","videoName","pdfName"].forEach(id=>document.getElementById(id).textContent = `لم يتم اختيار أي ${id.includes("image") ? "صورة" : id.includes("video") ? "فيديو" : "PDF"}`);
   document.getElementById("includeDate").checked = false;
 };
 </script>
