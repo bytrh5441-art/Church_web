@@ -31,25 +31,22 @@ h1 {
   gap: 20px;
 }
 
-/* كارد المحاضرة */
+/* الكارد الرئيسي */
 .card {
   background: #fff;
   border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
   padding: 20px 25px;
   cursor: pointer;
   transition: all 0.3s ease;
   overflow: hidden;
-  position: relative;
-
   display: flex;
   flex-direction: column;
-  align-items: center; /* محاذاة أفقي للعنوان */
+  align-items: center;
 }
 
 .card:hover { transform: translateY(-5px); }
 
-/* العنوان في منتصف الكارد */
+/* العنوان */
 .card-title-wrapper {
   width: 100%;
   display: flex;
@@ -72,9 +69,8 @@ h1 {
   text-align: center;
 }
 
-/* المحتويات الداخلية مع الخط الجانبي */
+/* المحتوى */
 .card-content-wrapper {
-  position: relative;
   display: flex;
   flex-direction: row-reverse;
   gap: 15px;
@@ -84,29 +80,37 @@ h1 {
 .card-content {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.5s ease;
-  padding-left: 20px;
-  border-left: 4px solid #f83600; /* الخط الجانبي الزاهي */
+  padding-right: 3px;
+  border-right: 3px solid #2a6573;
 }
 
 .card.open .card-content {
-  max-height: 2000px; /* ارتفاع تقريبي للفتح */
+  max-height: 2000px;
 }
 
-/* كاردات صغيرة داخل الكارد الرئيسي */
+/* الكاردات الداخلية */
 .inner-card {
-  background: #f9f9f9;
-  border-radius: 12px;
+  background: #e0e0e0;
+  border-radius: 12px 0 0 12px;
   padding: 10px 15px;
   cursor: pointer;
   transition: all 0.3s ease;
   overflow: hidden;
+  box-shadow: none !important;
 }
 
-.inner-card:hover { transform: translateX(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+.inner-card:hover {
+  box-shadow: none !important;
+  transform: translateX(0px);
+}
+
+.inner-card.open {
+  box-shadow: none !important;
+}
 
 .inner-card-title {
   font-weight: 600;
@@ -116,17 +120,40 @@ h1 {
 .inner-card-content {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.4s ease;
+  transition: max-height .5s ease;
   margin-top: 5px;
   text-align: right;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  
 }
 
-/* عند الفتح */
 .inner-card.open .inner-card-content {
   max-height: 500px;
+  
 }
 
-/* محتوى الوسائط */
+/* 🔥 النص لما يتفتح */
+.inner-card.text.open .inner-card-content {
+  background: #ececec;
+  border-right: 3px solid #1f4461;
+  color:#1f4461;
+  /* تمدد كامل */
+  margin-right: -5px;
+  margin-left: -15px;
+  margin-bottom: -5px;
+
+  padding: 12px;
+  width: calc(93% + 30px);
+
+  border-radius: 10px 0 0 10px;
+}
+ .inner-card.text{
+   color:#1f4461;
+   
+ }
+/* الوسائط */
 .inner-card-content img, 
 .inner-card-content video, 
 .inner-card-content iframe {
@@ -159,39 +186,55 @@ async function loadPosts() {
   const container = document.getElementById("posts");
   container.innerHTML = "";
 
+  const typeNames = {
+    text: "النص",
+    image: "الصورة",
+    video: "الفيديو",
+    pdf: "ملف PDF"
+  };
+
   querySnapshot.forEach((doc) => {
     const post = doc.data();
     const dateStr = post.date ? new Date(post.date).toLocaleString() : null;
 
-    // الكارد الرئيسي
     const card = document.createElement("div");
     card.className = "card";
 
-    // الهيدر (عنوان + تاريخ) في منتصف الكارد
-    const headerHTML = `<div class="card-title-wrapper">
-                          <div>
-                            <div class="card-title">${post.title || "بدون عنوان"}</div>
-                            ${dateStr ? `<div class="card-date">تاريخ الرفع: ${dateStr}</div>` : ""}
-                          </div>
-                        </div>`;
+    const headerHTML = `
+      <div class="card-title-wrapper">
+        <div>
+          <div class="card-title">${post.title || "بدون عنوان"}</div>
+          ${dateStr ? `<div class="card-date">تاريخ الرفع: ${dateStr}</div>` : ""}
+        </div>
+      </div>
+    `;
 
-    card.innerHTML = headerHTML + `<div class="card-content-wrapper">
-                                     <div class="card-content"></div>
-                                   </div>`;
+    card.innerHTML = headerHTML + `
+      <div class="card-content-wrapper">
+        <div class="card-content"></div>
+      </div>
+    `;
 
     const cardContent = card.querySelector(".card-content");
 
-    // إنشاء الكاردات الداخلية لكل نوع محتوى
     if(post.contents){
       for(const [type, value] of Object.entries(post.contents)){
         const inner = document.createElement("div");
         inner.className = "inner-card";
-        inner.innerHTML = `<div class="inner-card-title">${type.toUpperCase()}</div>
-                           <div class="inner-card-content"></div>`;
+
+        if(type==="text") inner.classList.add("text");
+
+        const displayName = typeNames[type] || type.toUpperCase();
+
+        inner.innerHTML = `
+          <div class="inner-card-title">${displayName}</div>
+          <div class="inner-card-content"></div>
+        `;
+
         const innerContent = inner.querySelector(".inner-card-content");
 
         if(type==="text") innerContent.innerHTML = `<p>${value}</p>`;
-        else if(type==="image") innerContent.innerHTML = `<img src="${value}" alt="صورة">`;
+        else if(type==="image") innerContent.innerHTML = `<img src="${value}">`;
         else if(type==="video") innerContent.innerHTML = `<video src="${value}" controls></video>`;
         else if(type==="pdf") innerContent.innerHTML = `<iframe src="${value}" style="height:400px;"></iframe>`;
 
@@ -205,7 +248,6 @@ async function loadPosts() {
       }
     }
 
-    // فتح/إغلاق الكارد الرئيسي عند الضغط على أي مكان في الكارد
     card.addEventListener("click", () => {
       card.classList.toggle("open");
     });
