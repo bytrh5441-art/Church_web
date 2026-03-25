@@ -12,6 +12,7 @@ body {
   min-height: 100vh;
   padding: 40px 20px;
   background: linear-gradient(135deg,#f83600,#f9d423);
+  direction: rtl;
 }
 
 h1 {
@@ -40,9 +41,16 @@ h1 {
   transition: all 0.3s ease;
   overflow: hidden;
   position: relative;
+  display: flex;
+  flex-direction: row-reverse; /* خط جانبي للكاردات الداخلية على اليسار */
+  gap: 15px;
 }
 
 .card:hover { transform: translateY(-5px); }
+
+.card-info {
+  flex: 1;
+}
 
 .card-title {
   font-size: 20px;
@@ -57,14 +65,15 @@ h1 {
   margin-bottom: 10px;
 }
 
-/* المحتويات الداخلية */
+/* المحتويات الداخلية في خط جانبي */
 .card-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.4s ease;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+  width: 200px; /* عرض الخط الجانبي */
 }
 
 .card.open .card-content {
@@ -81,7 +90,7 @@ h1 {
   overflow: hidden;
 }
 
-.inner-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+.inner-card:hover { transform: translateX(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
 
 .inner-card-title {
   font-weight: 600;
@@ -93,6 +102,7 @@ h1 {
   overflow: hidden;
   transition: max-height 0.4s ease;
   margin-top: 5px;
+  text-align: right;
 }
 
 /* عند الفتح */
@@ -140,9 +150,12 @@ async function loadPosts() {
     // الكارد الرئيسي
     const card = document.createElement("div");
     card.className = "card";
-    card.innerHTML = `<div class="card-title">${post.title || "بدون عنوان"}</div>` +
-                     (dateStr ? `<div class="card-date">تاريخ الرفع: ${dateStr}</div>` : "") +
-                     `<div class="card-content"></div>`;
+
+    card.innerHTML = `<div class="card-info">
+                        <div class="card-title">${post.title || "بدون عنوان"}</div>
+                        ${dateStr ? `<div class="card-date">تاريخ الرفع: ${dateStr}</div>` : ""}
+                      </div>
+                      <div class="card-content"></div>`;
     
     const cardContent = card.querySelector(".card-content");
 
@@ -151,17 +164,15 @@ async function loadPosts() {
       for(const [type, value] of Object.entries(post.contents)){
         const inner = document.createElement("div");
         inner.className = "inner-card";
-        inner.innerHTML = `<div class="inner-card-title">${type.toUpperCase()}</div>` +
-                          `<div class="inner-card-content"></div>`;
+        inner.innerHTML = `<div class="inner-card-title">${type.toUpperCase()}</div>
+                           <div class="inner-card-content"></div>`;
         const innerContent = inner.querySelector(".inner-card-content");
 
-        // حسب نوع المحتوى
         if(type==="text") innerContent.innerHTML = `<p>${value}</p>`;
         else if(type==="image") innerContent.innerHTML = `<img src="${value}" alt="صورة">`;
         else if(type==="video") innerContent.innerHTML = `<video src="${value}" controls></video>`;
         else if(type==="pdf") innerContent.innerHTML = `<iframe src="${value}" style="height:400px;"></iframe>`;
 
-        // فتح الكارد الداخلي مع السحب للأعلى
         inner.addEventListener("click", (e)=>{
           e.stopPropagation();
           inner.classList.toggle("open");
@@ -181,7 +192,6 @@ async function loadPosts() {
   });
 }
 
-// تشغيل تلقائي عند تحميل الصفحة
 loadPosts();
 </script>
 
