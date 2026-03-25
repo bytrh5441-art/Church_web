@@ -144,6 +144,9 @@
   <button class="upload-btn" onclick="upload()">نشر</button>
 </div>
 
+<!-- استدعاء دالة upload الحقيقية من app.js -->
+<script type="module" src="app.js"></script>
+
 <script>
 const fileInput = document.getElementById('file');
 const fileName = document.getElementById('fileName');
@@ -156,7 +159,7 @@ fileInput.addEventListener('change', () => {
   }
 });
 
-// دالة الرفع الحقيقية
+// يمكن هنا توجيه upload للـ app.js أو تعديل app.js ليستقبل FormData
 function upload() {
   const title = document.getElementById('title').value;
   const includeDate = document.getElementById('includeDate').checked;
@@ -172,10 +175,13 @@ function upload() {
   if(file) formData.append('file', file);
   if(includeDate) formData.append('date', new Date().toISOString());
 
-  // هنا تضع الكود الحقيقي للرفع على السيرفر
-  // مثلاً fetch أو استدعاء دالة upload في app.js
-  console.log("البيانات جاهزة للإرسال:", formData);
-  alert('تم تجهيز البيانات للإرسال للسيرفر');
+  // استدعاء upload الحقيقي في app.js
+  if(typeof window.appUpload === "function") {
+    window.appUpload(formData); // افترض أن app.js فيه دالة window.appUpload
+  } else {
+    console.log("FormData جاهز للإرسال:", formData);
+    alert('تم تجهيز البيانات للإرسال للسيرفر');
+  }
 }
 </script>
 
