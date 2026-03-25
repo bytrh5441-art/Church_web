@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>رفع بوست عصري</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
     * {
       box-sizing: border-box;
       font-family: 'Poppins', sans-serif;
@@ -13,106 +15,113 @@
     }
 
     body {
-      height: 100vh;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: #333;
+      min-height: 100vh;
     }
 
     .card {
       background: #fff;
       width: 100%;
       max-width: 450px;
-      border-radius: 20px;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+      border-radius: 25px;
       padding: 40px 30px;
-      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
       position: relative;
+      text-align: center;
+      transition: transform 0.3s ease;
     }
 
-    h2 {
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h2 {
       font-size: 28px;
-      margin-bottom: 25px;
+      margin-bottom: 30px;
       color: #333;
     }
 
-    input[type="text"] {
+    .input-field {
       width: 100%;
       padding: 15px 20px;
-      margin: 15px 0;
-      border-radius: 12px;
-      border: 1px solid #ddd;
+      margin-bottom: 20px;
+      border-radius: 15px;
+      border: 1px solid #ccc;
       font-size: 16px;
-      transition: all 0.3s ease;
+      transition: 0.3s;
     }
 
-    input[type="text"]:focus {
-      border-color: #764ba2;
-      box-shadow: 0 0 10px rgba(118,75,162,0.3);
+    .input-field:focus {
+      border-color: #6a11cb;
+      box-shadow: 0 0 10px rgba(106,17,203,0.3);
       outline: none;
     }
 
-    input[type="file"] {
-      display: none;
-    }
-
     .file-label {
-      display: inline-block;
-      background: #764ba2;
+      display: block;
+      width: fit-content;
+      margin: 0 auto 15px;
+      background: #6a11cb;
       color: #fff;
       padding: 12px 25px;
-      border-radius: 12px;
+      border-radius: 15px;
       cursor: pointer;
-      transition: background 0.3s;
-      margin-bottom: 20px;
+      transition: background 0.3s, transform 0.2s;
     }
 
     .file-label:hover {
-      background: #667eea;
-    }
-
-    .progress-container {
-      width: 100%;
-      height: 20px;
-      background: #eee;
-      border-radius: 10px;
-      overflow: hidden;
-      margin: 15px 0;
-    }
-
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: #764ba2;
-      text-align: center;
-      color: white;
-      line-height: 20px;
-      border-radius: 10px 0 0 10px;
-      transition: width 0.3s ease;
-    }
-
-    .upload-btn {
-      background: #667eea;
-      color: #fff;
-      padding: 15px 30px;
-      font-size: 16px;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .upload-btn:hover {
-      background: #764ba2;
-      transform: translateY(-3px);
+      background: #2575fc;
+      transform: translateY(-2px);
     }
 
     .file-name {
-      margin-top: 10px;
+      margin-bottom: 20px;
       font-size: 14px;
       color: #555;
+    }
+
+    .upload-btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 15px;
+      background: linear-gradient(90deg, #6a11cb, #2575fc);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .upload-btn:hover {
+      background: linear-gradient(90deg, #2575fc, #6a11cb);
+      transform: translateY(-3px);
+    }
+
+    /* لمسة إضافية */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 80px;
+      height: 80px;
+      background: rgba(106,17,203,0.2);
+      border-radius: 50%;
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: -25px;
+      left: -25px;
+      width: 100px;
+      height: 100px;
+      background: rgba(37,117,252,0.2);
+      border-radius: 50%;
     }
   </style>
 </head>
@@ -120,15 +129,11 @@
 
 <div class="card">
   <h2>رفع بوست</h2>
-  <input type="text" id="text" placeholder="اكتب نصك هنا">
+  <input type="text" id="text" class="input-field" placeholder="اكتب نصك هنا">
 
   <label for="file" class="file-label">اختر ملف</label>
-  <input type="file" id="file">
+  <input type="file" id="file" style="display:none;">
   <div class="file-name" id="fileName">لم يتم اختيار أي ملف</div>
-
-  <div class="progress-container">
-    <div class="progress-bar" id="progressBar">0%</div>
-  </div>
 
   <button class="upload-btn" onclick="upload()">نشر</button>
 </div>
@@ -136,9 +141,7 @@
 <script type="module">
 const fileInput = document.getElementById('file');
 const fileName = document.getElementById('fileName');
-const progressBar = document.getElementById('progressBar');
 
-// عرض اسم الملف بعد الاختيار
 fileInput.addEventListener('change', () => {
   if(fileInput.files.length > 0){
     fileName.textContent = fileInput.files[0].name;
@@ -147,28 +150,14 @@ fileInput.addEventListener('change', () => {
   }
 });
 
-// دالة وهمية للرفع مع شريط تقدم
+// دالة وهمية للنشر
 export function upload() {
-  if (!fileInput.files.length) {
-    alert('اختر ملف أولاً');
+  const text = document.getElementById('text').value;
+  if (!text && !fileInput.files.length) {
+    alert('اكتب نص أو اختر ملف أولاً');
     return;
   }
-
-  let progress = 0;
-  progressBar.style.width = '0%';
-  progressBar.textContent = '0%';
-
-  const interval = setInterval(() => {
-    if (progress >= 100) {
-      clearInterval(interval);
-      progressBar.textContent = 'تم الرفع!';
-      progressBar.style.borderRadius = '10px';
-      return;
-    }
-    progress += 5;
-    progressBar.style.width = progress + '%';
-    progressBar.textContent = progress + '%';
-  }, 100);
+  alert('تم النشر بنجاح! (وهمي)');
 }
 </script>
 
