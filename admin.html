@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>رفع بوست</title>
   <style>
-    /* Reset بسيط */
     * {
       box-sizing: border-box;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -35,6 +34,113 @@
       margin-bottom: 25px;
       color: #333;
       font-size: 24px;
+    }
+
+    input[type="text"],
+    input[type="file"] {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input[type="text"]:focus,
+    input[type="file"]:focus {
+      border-color: #4CAF50;
+      box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+      outline: none;
+    }
+
+    button {
+      background: #4CAF50;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background: #45a049;
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    /* شريط التقدم */
+    .progress-container {
+      width: 100%;
+      background: #eee;
+      border-radius: 10px;
+      margin: 15px 0;
+      height: 20px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #4CAF50;
+      text-align: center;
+      color: white;
+      line-height: 20px;
+      border-radius: 10px 0 0 10px;
+      transition: width 0.3s;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>رفع بوست</h2>
+  <input type="text" id="text" placeholder="اكتب نصك هنا">
+  <input type="file" id="file">
+  
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar">0%</div>
+  </div>
+  
+  <button onclick="upload()">نشر</button>
+</div>
+
+<script type="module">
+// دالة وهمية للرفع مع شريط التقدم
+export function upload() {
+  const fileInput = document.getElementById('file');
+  const progressBar = document.getElementById('progressBar');
+
+  if (!fileInput.files.length) {
+    alert('اختر ملف أولاً');
+    return;
+  }
+
+  let progress = 0;
+  progressBar.style.width = '0%';
+  progressBar.textContent = '0%';
+
+  const interval = setInterval(() => {
+    if (progress >= 100) {
+      clearInterval(interval);
+      progressBar.textContent = 'تم الرفع!';
+      progressBar.style.borderRadius = '10px';
+      return;
+    }
+    progress += 5; // كل خطوة 5%
+    progressBar.style.width = progress + '%';
+    progressBar.textContent = progress + '%';
+  }, 100); // كل 100 مللي ثانية تتقدم
+}
+</script>
+
+</body>
+</html>      font-size: 24px;
     }
 
     input[type="text"],
