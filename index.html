@@ -1,82 +1,114 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>عرض المحاضرات</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    * { box-sizing: border-box; margin:0; padding:0; font-family:'Poppins', sans-serif; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>عرض المحاضرات المتعددة</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin:0; padding:0; font-family:'Poppins', sans-serif; }
 
-    body {
-      min-height: 100vh;
-      padding: 40px 20px;
-      background: linear-gradient(135deg,#f83600,#f9d423);
-    }
+body {
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: linear-gradient(135deg,#f83600,#f9d423);
+}
 
-    h1 {
-      text-align: center;
-      color: #fff;
-      margin-bottom: 30px;
-      font-size: 36px;
-      font-weight: 600;
-    }
+h1 {
+  text-align: center;
+  color: #fff;
+  margin-bottom: 30px;
+  font-size: 36px;
+  font-weight: 600;
+}
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
-    .card {
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      padding: 20px 25px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      overflow: hidden;
-      position: relative;
-    }
+/* كارد المحاضرة */
+.card {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  padding: 20px 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+}
 
-    .card:hover { transform: translateY(-5px); }
+.card:hover { transform: translateY(-5px); }
 
-    .card-title {
-      font-size: 20px;
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 10px;
-    }
+.card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
 
-    .card-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease;
-    }
+.card-date {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 10px;
+}
 
-    .card.open .card-content {
-      max-height: 500px; /* ارتفاع تقريبي للفتح */
-      margin-top: 10px;
-    }
+/* المحتويات الداخلية */
+.card-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
-    .card img {
-      max-width: 100%;
-      border-radius: 10px;
-      margin-bottom: 10px;
-    }
+.card.open .card-content {
+  max-height: 1000px;
+}
 
-    .card p {
-      color: #555;
-      margin-bottom: 5px;
-    }
+/* كاردات صغيرة داخل الكارد الرئيسي */
+.inner-card {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
 
-    .card-date {
-      font-size: 12px;
-      color: #888;
-    }
-  </style>
+.inner-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+
+.inner-card-title {
+  font-weight: 600;
+  color: #333;
+}
+
+.inner-card-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  margin-top: 5px;
+}
+
+/* عند الفتح */
+.inner-card.open .inner-card-content {
+  max-height: 500px;
+}
+
+/* محتوى الوسائط */
+.inner-card-content img, 
+.inner-card-content video, 
+.inner-card-content iframe {
+  width: 100%;
+  border-radius: 10px;
+  margin-top: 5px;
+}
+</style>
 </head>
 <body>
 
@@ -105,17 +137,42 @@ async function loadPosts() {
     const post = doc.data();
     const dateStr = post.date ? new Date(post.date).toLocaleString() : null;
 
+    // الكارد الرئيسي
     const card = document.createElement("div");
     card.className = "card";
+    card.innerHTML = `<div class="card-title">${post.title || "بدون عنوان"}</div>` +
+                     (dateStr ? `<div class="card-date">تاريخ الرفع: ${dateStr}</div>` : "") +
+                     `<div class="card-content"></div>`;
+    
+    const cardContent = card.querySelector(".card-content");
 
-    card.innerHTML = `
-      <div class="card-title">${post.text || "بدون عنوان"}</div>
-      <div class="card-content">
-        ${post.image ? `<img src="${post.image}" alt="صورة المحاضرة">` : ""}
-        ${dateStr ? `<p class="card-date">تاريخ الرفع: ${dateStr}</p>` : ""}
-      </div>
-    `;
+    // إنشاء الكاردات الداخلية لكل نوع محتوى
+    if(post.contents){
+      for(const [type, value] of Object.entries(post.contents)){
+        const inner = document.createElement("div");
+        inner.className = "inner-card";
+        inner.innerHTML = `<div class="inner-card-title">${type.toUpperCase()}</div>` +
+                          `<div class="inner-card-content"></div>`;
+        const innerContent = inner.querySelector(".inner-card-content");
 
+        // حسب نوع المحتوى
+        if(type==="text") innerContent.innerHTML = `<p>${value}</p>`;
+        else if(type==="image") innerContent.innerHTML = `<img src="${value}" alt="صورة">`;
+        else if(type==="video") innerContent.innerHTML = `<video src="${value}" controls></video>`;
+        else if(type==="pdf") innerContent.innerHTML = `<iframe src="${value}" style="height:400px;"></iframe>`;
+
+        // فتح الكارد الداخلي مع السحب للأعلى
+        inner.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          inner.classList.toggle("open");
+          inner.scrollIntoView({behavior:"smooth", block:"start"});
+        });
+
+        cardContent.appendChild(inner);
+      }
+    }
+
+    // فتح/إغلاق الكارد الرئيسي
     card.addEventListener("click", () => {
       card.classList.toggle("open");
     });
