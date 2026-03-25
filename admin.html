@@ -1,9 +1,137 @@
-<!DOCTYPE html> 
-<html>   
-  <body>  <h2>رفع بوست</h2> 
-    <input type="text" id="text" placeholder="اكتب نص"><br><br>  
-<input type="file" id="file"><br><br> 
-    <button onclick="upload()">نشر</button>
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>رفع بوست عصري</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+
+    .card {
+      background: #fff;
+      width: 100%;
+      max-width: 450px;
+      border-radius: 25px;
+      padding: 40px 30px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      text-align: center;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    h2 {
+      font-size: 28px;
+      margin-bottom: 25px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 15px 20px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      margin-bottom: 20px;
+      transition: 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #764ba2;
+      box-shadow: 0 0 10px rgba(118,75,162,0.3);
+      outline: none;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .file-label {
+      display: inline-block;
+      padding: 12px 25px;
+      background: #764ba2;
+      color: #fff;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 10px;
+      transition: 0.3s;
+    }
+
+    .file-label:hover {
+      background: #667eea;
+      transform: translateY(-2px);
+    }
+
+    .file-name {
+      margin-bottom: 25px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    button {
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      color: #fff;
+      padding: 15px 30px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>رفع بوست</h2>
+  
+  <input type="text" id="text" placeholder="اكتب نص">
+  
+  <label for="file" class="file-label">اختر ملف</label>
+  <input type="file" id="file">
+  <div class="file-name" id="fileName">لم يتم اختيار أي ملف</div>
+
+  <button onclick="upload()">نشر</button>
+</div>
 
 <script type="module" src="app.js"></script>
-  </body>    </html>    
+<script>
+const fileInput = document.getElementById('file');
+const fileName = document.getElementById('fileName');
+
+fileInput.addEventListener('change', () => {
+  if(fileInput.files.length > 0){
+    fileName.textContent = fileInput.files[0].name;
+  } else {
+    fileName.textContent = 'لم يتم اختيار أي ملف';
+  }
+});
+</script>
+
+</body>
+</html>
