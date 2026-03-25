@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>رفع محاضرة عصري</title>
+  <title>رفع محاضرة عصري على Firebase</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin:0; padding:0; font-family: 'Poppins', sans-serif; }
@@ -31,98 +31,26 @@
 
     .card:hover { transform: translateY(-10px); }
 
-    h2 {
-      font-size: 32px;
-      color: #333;
-      margin-bottom: 30px;
-      font-weight: 600;
-    }
+    h2 { font-size: 32px; color: #333; margin-bottom: 30px; font-weight: 600; }
 
-    .input-field {
-      width: 100%;
-      padding: 18px 20px;
-      border-radius: 15px;
-      border: 1px solid #ddd;
-      font-size: 16px;
-      margin-bottom: 20px;
-      transition: all 0.3s ease;
-    }
+    .input-field { width: 100%; padding: 18px 20px; border-radius: 15px; border: 1px solid #ddd; font-size: 16px; margin-bottom: 20px; transition: all 0.3s ease; }
+    .input-field:focus { border-color: #f83600; box-shadow: 0 0 10px rgba(248,54,0,0.3); outline: none; }
 
-    .input-field:focus {
-      border-color: #f83600;
-      box-shadow: 0 0 10px rgba(248,54,0,0.3);
-      outline: none;
-    }
-
-    .file-label {
-      display: inline-block;
-      padding: 15px 30px;
-      background: #f83600;
-      color: #fff;
-      border-radius: 15px;
-      cursor: pointer;
-      font-weight: 600;
-      margin-bottom: 10px;
-      transition: all 0.3s;
-    }
-
-    .file-label:hover {
-      background: #f9d423;
-      color: #333;
-      transform: translateY(-3px);
-    }
+    .file-label { display: inline-block; padding: 15px 30px; background: #f83600; color: #fff; border-radius: 15px; cursor: pointer; font-weight: 600; margin-bottom: 10px; transition: all 0.3s; }
+    .file-label:hover { background: #f9d423; color: #333; transform: translateY(-3px); }
 
     #file { display: none; }
 
     .file-name { font-size: 14px; color: #555; margin-bottom: 20px; }
 
-    .checkbox-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 25px;
-    }
+    .checkbox-container { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 25px; }
 
-    .upload-btn {
-      background: linear-gradient(90deg, #f83600, #f9d423);
-      padding: 18px 40px;
-      border: none;
-      border-radius: 20px;
-      color: #fff;
-      font-size: 18px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .upload-btn:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    }
+    .upload-btn { background: linear-gradient(90deg, #f83600, #f9d423); padding: 18px 40px; border: none; border-radius: 20px; color: #fff; font-size: 18px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+    .upload-btn:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
 
     /* زخارف */
-    .card::before {
-      content: '';
-      position: absolute;
-      width: 150px;
-      height: 150px;
-      background: rgba(248,54,0,0.1);
-      border-radius: 50%;
-      top: -50px;
-      right: -50px;
-    }
-
-    .card::after {
-      content: '';
-      position: absolute;
-      width: 200px;
-      height: 200px;
-      background: rgba(249,212,35,0.1);
-      border-radius: 50%;
-      bottom: -70px;
-      left: -70px;
-    }
+    .card::before { content: ''; position: absolute; width: 150px; height: 150px; background: rgba(248,54,0,0.1); border-radius: 50%; top: -50px; right: -50px; }
+    .card::after { content: ''; position: absolute; width: 200px; height: 200px; background: rgba(249,212,35,0.1); border-radius: 50%; bottom: -70px; left: -70px; }
   </style>
 </head>
 <body>
@@ -130,7 +58,7 @@
 <div class="card">
   <h2>رفع محاضرة</h2>
 
-  <input type="text" id="title" class="input-field" placeholder="عنوان المحاضرة">
+  <input type="text" id="text" class="input-field" placeholder="عنوان المحاضرة">
 
   <label for="file" class="file-label">اختر ملف</label>
   <input type="file" id="file">
@@ -144,10 +72,19 @@
   <button class="upload-btn" onclick="upload()">نشر</button>
 </div>
 
-<!-- استدعاء دالة upload الحقيقية من app.js -->
-<script type="module" src="app.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyA809gpxrpd1QSlWEH4wCjZHw3_aRai3gA",
+  authDomain: "my-site-a4c05.firebaseapp.com",
+  projectId: "my-site-a4c05"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 const fileInput = document.getElementById('file');
 const fileName = document.getElementById('fileName');
 
@@ -159,30 +96,45 @@ fileInput.addEventListener('change', () => {
   }
 });
 
-// يمكن هنا توجيه upload للـ app.js أو تعديل app.js ليستقبل FormData
-function upload() {
-  const title = document.getElementById('title').value;
-  const includeDate = document.getElementById('includeDate').checked;
+window.upload = async function() {
+  const text = document.getElementById("text").value;
+  const includeDate = document.getElementById("includeDate").checked;
   const file = fileInput.files[0];
 
-  if(!title && !file) {
-    alert('اكتب عنوان أو اختر ملف!');
+  if (!file) {
+    alert("اختار صورة");
     return;
   }
 
+  // رفع الصورة على Cloudinary
   const formData = new FormData();
-  formData.append('title', title);
-  if(file) formData.append('file', file);
-  if(includeDate) formData.append('date', new Date().toISOString());
+  formData.append("file", file);
+  formData.append("upload_preset", "my_preset");
 
-  // استدعاء upload الحقيقي في app.js
-  if(typeof window.appUpload === "function") {
-    window.appUpload(formData); // افترض أن app.js فيه دالة window.appUpload
-  } else {
-    console.log("FormData جاهز للإرسال:", formData);
-    alert('تم تجهيز البيانات للإرسال للسيرفر');
-  }
-}
+  const res = await fetch("https://api.cloudinary.com/v1_1/dyml1sor9/image/upload", {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await res.json();
+
+  // حفظ في Firebase
+  const docData = {
+    text: text,
+    image: data.secure_url
+  };
+  if(includeDate) docData.date = new Date().toISOString();
+
+  await addDoc(collection(db, "posts"), docData);
+
+  alert("تم النشر 🔥");
+
+  // إعادة تعيين الحقول بعد الرفع
+  document.getElementById("text").value = "";
+  fileInput.value = "";
+  fileName.textContent = "لم يتم اختيار أي ملف";
+  document.getElementById("includeDate").checked = false;
+};
 </script>
 
 </body>
